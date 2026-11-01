@@ -1,0 +1,22 @@
+{
+  "name": "crewbridge",
+  "private": true,
+  "workspaces": [
+    "shared",
+    "client",
+    "server"
+  ],
+  "scripts": {
+    "dev": "npm run dev -w @crewbridge/server & npm run dev -w @crewbridge/client",
+    "dev:client": "npm run dev -w @crewbridge/client",
+    "dev:server": "npm run dev -w @crewbridge/server",
+    "build": "npm run build -w @crewbridge/client && npm run build -w @crewbridge/server",
+    "test": "npm run test -w @crewbridge/client && npm run test -w @crewbridge/server",
+    "lint": "npm run lint -w @crewbridge/client",
+    "typecheck": "npm run typecheck -w @crewbridge/client && npm run typecheck -w @crewbridge/server",
+    "seed": "npm run seed -w @crewbridge/server"
+  },
+  "engines": {
+    "node": ">=22.12"
+  }
+}
