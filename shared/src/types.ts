@@ -94,3 +94,33 @@ export interface TaskFilter {
   departmentId?: string
   assigneeId?: string
 }
+
+export interface AnalyticsOverview {
+  overview: {
+    totalEvents: number
+    totalVolunteers: number
+    totalTasks: number
+    completedTasks: number
+    completionRate: number
+  }
+
+  events: Record<EventStatus, number>
+  tasks: Record<TaskStatus, number>
+
+  volunteers: {
+    total: number
+    availability: Record<Availability, number>
+    roles: Record<Role, number>
+  }
+
+  departments: {
+    id: string
+    name: string
+    eventId: string
+    volunteerCount: number
+    taskCount: number
+    completedTasks: number
+  }[]
+
+  recentActivity: Activity[]
+}

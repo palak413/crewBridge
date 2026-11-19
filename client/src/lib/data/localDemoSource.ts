@@ -12,7 +12,7 @@ import {
 } from './schemas'
 import { createSeed, type Workspace } from './seed'
 import type { DataSource } from './source'
-import type { Activity, Availability, CrewEvent, Department, Person, Task, TaskFilter, TaskStatus } from './types'
+import type { AnalyticsOverview, Activity, Availability, CrewEvent, Department, Person, Task, TaskFilter, TaskStatus } from './types'
 
 /**
  * Milestone 2 demo data source.
@@ -443,7 +443,95 @@ export function createLocalDemoSource(options: { storage?: Storage | null; now?:
         ws.tasks = ws.tasks.filter((t) => t.id !== id)
         commit()
       }),
+getAnalytics: (): Promise<AnalyticsOverview> =>
+  run(() => {
+    const volunteers = ws.people.filter((p) => p.role === 'volunteer')
+    const completedTasks = ws.tasks.filter((t) => t.status === 'completed')
 
+    const eventCounts = {
+      draft: 0,
+      upcoming: 0,
+      live: 0,
+      completed: 0,
+    }
+
+    const taskCounts = {
+      todo: 0,
+      in_progress: 0,
+      completed: 0,
+    }
+
+    const roleCounts = {
+      organizer: 0,
+      leader: 0,
+      volunteer: 0,
+    }
+
+    const availabilityCounts = {
+      available: 0,
+      busy: 0,
+      unavailable: 0,
+    }
+
+    ws.events.forEach((event) => {
+      eventCounts[event.status]++
+    })
+
+    ws.tasks.forEach((task) => {
+      taskCounts[task.status]++
+    })
+
+    ws.people.forEach((person) => {
+      roleCounts[person.role]++
+    })
+
+    volunteers.forEach((person) => {
+      availabilityCounts[person.availability]++
+    })
+
+    return {
+      overview: {
+        totalEvents: ws.events.length,
+        totalVolunteers: volunteers.length,
+        totalTasks: ws.tasks.length,
+        completedTasks: completedTasks.length,
+        completionRate:
+          ws.tasks.length === 0
+            ? 0
+            : Math.round((completedTasks.length / ws.tasks.length) * 100),
+      },
+
+      events: eventCounts,
+      tasks: taskCounts,
+
+      volunteers: {
+        total: volunteers.length,
+        availability: availabilityCounts,
+        roles: roleCounts,
+      },
+
+      departments: ws.departments.map((department) => {
+        const departmentTasks = ws.tasks.filter(
+          (task) => task.departmentId === department.id,
+        )
+
+        return {
+          id: department.id,
+          name: department.name,
+          eventId: department.eventId,
+          volunteerCount: department.memberIds.filter((id) =>
+            volunteers.some((person) => person.id === id),
+          ).length,
+          taskCount: departmentTasks.length,
+          completedTasks: departmentTasks.filter(
+            (task) => task.status === 'completed',
+          ).length,
+        }
+      }),
+
+      recentActivity: ws.activity.slice(0, 8),
+    }
+}),
     listActivity: (limit = 20) => run(() => ws.activity.slice(0, limit)),
 
     resetDemo: () =>

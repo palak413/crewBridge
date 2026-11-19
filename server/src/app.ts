@@ -16,6 +16,7 @@ import { departmentRoutes } from './routes/departments'
 import { eventRoutes } from './routes/events'
 import { peopleRoutes } from './routes/people'
 import { taskRoutes } from './routes/tasks'
+import { analyticsRoutes } from './routes/analytics'
 
 export function createApp(env: Env, opts: { nexconnFetch?: Fetch } = {}) {
   const nx = env.nexconn ? createNexconnClient(env.nexconn, opts.nexconnFetch) : null
@@ -51,6 +52,7 @@ export function createApp(env: Env, opts: { nexconnFetch?: Fetch } = {}) {
   authed.use('/chat', chatRoutes(env, nx && sync ? { nx, sync } : null))
   authed.use('/people', peopleRoutes())
   authed.use('/tasks', taskRoutes())
+  authed.use('/analytics', analyticsRoutes())
   authed.get('/activity', async (req, res) => {
     const u = me(req)
     const limit = Math.min(Math.max(Number(req.query.limit) || 20, 1), 100)

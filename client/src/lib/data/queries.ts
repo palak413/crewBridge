@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useDataSource } from './dataContext'
 import type { DepartmentInput, EventInput, TaskInput, VolunteerInput } from './schemas'
 import type { Availability, TaskFilter, TaskStatus } from './types'
+// import type { AnalyticsOverview } from './types'
 
 /**
  * Query/mutation hooks — the only way UI code reads or writes data.
@@ -18,6 +19,7 @@ export const keys = {
   people: ['cb', 'people'] as const,
   tasks: (filter: TaskFilter = {}) => ['cb', 'tasks', filter] as const,
   activity: (limit: number) => ['cb', 'activity', limit] as const,
+  analytics: ['cb', 'analytics'] as const,
 }
 
 export function useCurrentUser() {
@@ -174,5 +176,13 @@ export function useResetDemo() {
   const src = useDataSource()
   return useInvalidatingMutation(async () => {
     await src.resetDemo?.()
+  })
+}
+export function useAnalytics() {
+  const src = useDataSource()
+
+  return useQuery({
+    queryKey: keys.analytics,
+    queryFn: () => src.getAnalytics(),
   })
 }

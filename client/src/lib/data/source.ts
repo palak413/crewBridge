@@ -1,5 +1,15 @@
 import type { DepartmentInput, EventInput, TaskInput, VolunteerInput } from './schemas'
-import type { Activity, Availability, CrewEvent, Department, Person, Task, TaskFilter, TaskStatus } from './types'
+import type {
+  AnalyticsOverview,
+  Activity,
+  Availability,
+  CrewEvent,
+  Department,
+  Person,
+  Task,
+  TaskFilter,
+  TaskStatus,
+} from './types'
 
 /**
  * The contract every data source implements. The UI only talks to this interface
@@ -39,7 +49,7 @@ export interface DataSource {
   updateTask(id: string, input: TaskInput): Promise<Task>
   moveTask(id: string, status: TaskStatus): Promise<Task>
   deleteTask(id: string): Promise<void>
-
+  getAnalytics(): Promise<AnalyticsOverview>
   listActivity(limit?: number): Promise<Activity[]>
 
   /** Demo-only: restore the seeded workspace. */

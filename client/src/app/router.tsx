@@ -31,7 +31,13 @@ export const routes: RouteObject[] = [
           { path: 'tasks', lazy: () => import('../features/tasks/TasksPage').then((m) => ({ Component: m.TasksPage })) },
           { path: 'volunteers', lazy: () => import('../features/volunteers/VolunteersPage').then((m) => ({ Component: m.VolunteersPage })) },
           { path: 'messages', lazy: () => import('../features/messages/MessagesPage').then((m) => ({ Component: m.MessagesPage })) },
-          { path: 'analytics', lazy: planned },
+          {
+            path: 'analytics',
+            lazy: () =>
+            import('../features/analytics/AnalyticsPage').then((m) => ({
+              Component: m.AnalyticsPage,
+            })),
+          },
           { path: 'settings', lazy: planned },
         ],
       },

@@ -1,6 +1,13 @@
 import { apiRequest } from '../api/client'
 import type { DataSource } from './source'
-import type { Activity, CrewEvent, Department, Person, Task } from './types'
+import type {
+  AnalyticsOverview,
+  Activity,
+  CrewEvent,
+  Department,
+  Person,
+  Task,
+} from './types'
 
 const q = (params: Record<string, string | undefined>) => {
   const s = new URLSearchParams(Object.entries(params).filter((e): e is [string, string] => !!e[1])).toString()
@@ -47,7 +54,7 @@ export function createHttpSource(): DataSource {
         status,
       }),
     deleteTask: (id) => send<void>('DELETE', `/tasks/${encodeURIComponent(id)}`),
-
+      getAnalytics: () => get<AnalyticsOverview>('/analytics/overview'),
     listActivity: (limit = 20) => get<Activity[]>(`/activity?limit=${limit}`),
   }
 }
